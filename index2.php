@@ -213,32 +213,28 @@ $found = findTransactionById(2, $transactions);
    <!-- ========== ГАЛЕРЕЯ ========== -->
 <h2>Галерея изображений</h2>
 <?php
-$dir = 'images/'; 
+// Задаем путь к папке с изображениями
+$dir = 'image/';
+// Сканируем содержимое директории
+// scandir — Получает список файлов и каталогов, расположенных по  указанному пути.
+// Возвращает array, содержащий имена файлов и каталогов, расположенных по  пути, переданному в параметре
+$files = scandir($dir);
 
-echo "Используемая папка: " . $dir . "<br>";
-echo "Папка существует: " . (is_dir($dir) ? 'Да' : 'Нет') . "<br>";
-
-if (is_dir($dir)) {
-    $files = glob($dir . '*.{jpg,jpeg,JPG,JPEG}', GLOB_BRACE);
-    if (empty($files)) {
-        echo "<p>JPG-файлы не найдены.</p>";
-    } else {
-        echo "<p>Найдено файлов: " . count($files) . "</p>";
-        echo '<div style="display: flex; flex-wrap: wrap; gap: 10px;">';
-        foreach ($files as $file) {
-            echo '<div style="border: 1px solid #ccc; padding: 5px; text-align: center;">';
-            echo '<img src="' . htmlspecialchars($file) . '" alt="' . basename($file) . '" style="width: 100px; height: auto;"><br>';
-            echo '<small>' . htmlspecialchars($file) . '</small>';
-            echo '</div>';
-        }
-        echo '</div>';
-    }
-} else {
-    echo "<p>Ошибка: папка '$dir' не найдена.</p>";
-    echo "Текущая директория: " . __DIR__ . "<br>";
-    echo "Попытка найти image: " . realpath('image/') . "<br>";
-    echo "Попытка найти images: " . realpath('images/') . "<br>";
+// Если нет ошибок при сканировании
+if ($files === false) {
+   return;
 }
+
+for ($i = 0; $i < count($files); $i++) {
+   // Пропускаем текущий каталог и родительский
+   if (($files[$i] != ".") && ($files[$i] != "..")) {
+       // Получаем путь к изображению
+       $path = $dir . $files[$i]; ?>
+       <!-- Выведите картинку на экран ->
+   <?php
+   }
+}
+
 ?>
 
 </body>
