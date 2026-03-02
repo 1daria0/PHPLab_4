@@ -1,13 +1,6 @@
 <?php
 declare(strict_types=1);
 
-/**
- * ==============================================
- *                ЗАДАНИЕ 1
- * ==============================================
- */
-
-// Исходный массив транзакций
 $transactions = [
     [
         "id" => 1,
@@ -39,12 +32,7 @@ $transactions = [
     ],
 ];
 
-/**
- * Вычисляет общую сумму всех транзакций.
- *
- * @param array $transactions Массив транзакций.
- * @return float Общая сумма.
- */
+
 function calculateTotalAmount(array $transactions): float {
     $total = 0.0;
     foreach ($transactions as $transaction) {
@@ -53,13 +41,7 @@ function calculateTotalAmount(array $transactions): float {
     return $total;
 }
 
-/**
- * Ищет транзакции по части описания (регистронезависимо).
- *
- * @param string $descriptionPart Часть описания для поиска.
- * @param array $transactions Массив транзакций.
- * @return array Массив найденных транзакций.
- */
+
 function findTransactionByDescription(string $descriptionPart, array $transactions): array {
     $found = [];
     foreach ($transactions as $transaction) {
@@ -70,13 +52,7 @@ function findTransactionByDescription(string $descriptionPart, array $transactio
     return $found;
 }
 
-/**
- * Находит транзакцию по ID с использованием цикла foreach.
- *
- * @param int $id Идентификатор транзакции.
- * @param array $transactions Массив транзакций.
- * @return array|null Найденная транзакция или null.
- */
+
 function findTransactionById(int $id, array $transactions): ?array {
     foreach ($transactions as $transaction) {
         if ($transaction['id'] === $id) {
@@ -86,25 +62,14 @@ function findTransactionById(int $id, array $transactions): ?array {
     return null;
 }
 
-/**
- * Находит транзакцию по ID с использованием array_filter.
- *
- * @param int $id Идентификатор транзакции.
- * @param array $transactions Массив транзакций.
- * @return array|null Найденная транзакция или null.
- */
+
 function findTransactionByIdWithFilter(int $id, array $transactions): ?array {
     $filtered = array_filter($transactions, fn($t) => $t['id'] === $id);
     $filtered = array_values($filtered); // переиндексируем
     return $filtered[0] ?? null;
 }
 
-/**
- * Вычисляет количество дней между датой транзакции и сегодняшним днём.
- *
- * @param string $date Дата транзакции в формате YYYY-MM-DD.
- * @return int Количество дней.
- */
+
 function daysSinceTransaction(string $date): int {
     $transactionDate = new DateTime($date);
     $today = new DateTime();
@@ -112,16 +77,7 @@ function daysSinceTransaction(string $date): int {
     return (int)$interval->days;
 }
 
-/**
- * Добавляет новую транзакцию в глобальный массив.
- *
- * @param int $id
- * @param string $date
- * @param float $amount
- * @param string $description
- * @param string $merchant
- * @return void
- */
+
 function addTransaction(int $id, string $date, float $amount, string $description, string $merchant): void {
     global $transactions;
     $transactions[] = [
@@ -133,18 +89,11 @@ function addTransaction(int $id, string $date, float $amount, string $descriptio
     ];
 }
 
-// ---- Демонстрация работы функций ----
-
-// Добавляем новую транзакцию
 addTransaction(5, '2024-03-01', 123.45, 'New purchase from function', 'Online Store');
 
-// Сортируем транзакции по сумме (по убыванию)
+
 usort($transactions, fn($a, $b) => $b['amount'] <=> $a['amount']);
 
-// (Для проверки можно также отсортировать по дате, закомментировав предыдущую строку)
-// usort($transactions, fn($a, $b) => (new DateTime($a['date'])) <=> (new DateTime($b['date'])));
-
-// Поиск транзакции с ID = 2 (просто для демонстрации)
 $found = findTransactionById(2, $transactions);
 
 ?>
@@ -168,9 +117,7 @@ $found = findTransactionById(2, $transactions);
     </style>
 </head>
 <body>
-    <h1>Лабораторная работа: массивы и галерея</h1>
 
-    <!-- ========== ЗАДАНИЕ 1: ТРАНЗАКЦИИ ========== -->
     <h2>Список банковских транзакций</h2>
 
     <?php if ($found): ?>
@@ -210,14 +157,14 @@ $found = findTransactionById(2, $transactions);
         </tfoot>
     </table>
 
-   <!-- ========== ГАЛЕРЕЯ ========== -->
+  
 <h2>Галерея изображений</h2>
  <?php
-    // Укажите правильное имя папки (image или images) в соответствии с файловой системой
-    $dir = 'images/';   // ← при необходимости измените на 'image/'
+  
+    $dir = 'images/';   
 
     if (is_dir($dir)) {
-        // Ищем все JPG и JPEG файлы (регистронезависимо благодаря маске)
+      
         $files = glob($dir . '*.{jpg,jpeg,JPG,JPEG}', GLOB_BRACE);
 
         if (empty($files)) {
@@ -227,7 +174,7 @@ $found = findTransactionById(2, $transactions);
             echo '<div class="gallery">';
 
             foreach ($files as $file) {
-                // htmlspecialchars защищает от XSS, basename возвращает только имя файла
+                
                 echo '<div style="border: 1px solid #ccc; padding: 5px; text-align: center;">';
                 echo '<img src="' . htmlspecialchars($file) . '" alt="' . htmlspecialchars(basename($file)) . '"><br>';
                 echo '<small>' . htmlspecialchars($file) . '</small>';
@@ -238,7 +185,7 @@ $found = findTransactionById(2, $transactions);
         }
     } else {
         echo "<p>Ошибка: папка '$dir' не найдена.</p>";
-        // Отладочная информация (можно удалить после настройки)
+
         echo "Текущая директория: " . __DIR__ . "<br>";
         echo "realpath('image/'): " . realpath('image/') . "<br>";
         echo "realpath('images/'): " . realpath('images/') . "<br>";
