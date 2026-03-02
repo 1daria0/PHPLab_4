@@ -214,7 +214,7 @@ $found = findTransactionById(2, $transactions);
     <h2>Галерея изображений</h2>
 
    <?php
-$dir = 'image/';
+$dir = 'images/';
 echo "<h3>Проверка галереи</h3>";
 if (is_dir($dir)) {
     $files = glob($dir . '*.{jpg,jpeg,JPG,JPEG}', GLOB_BRACE);
