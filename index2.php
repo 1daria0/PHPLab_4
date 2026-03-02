@@ -212,30 +212,38 @@ $found = findTransactionById(2, $transactions);
 
    <!-- ========== ГАЛЕРЕЯ ========== -->
 <h2>Галерея изображений</h2>
-<?php
-// Задаем путь к папке с изображениями
-$dir = 'image/';
-// Сканируем содержимое директории
-// scandir — Получает список файлов и каталогов, расположенных по  указанному пути.
-// Возвращает array, содержащий имена файлов и каталогов, расположенных по  пути, переданному в параметре
-$files = scandir($dir);
+ <?php
+    // Укажите правильное имя папки (image или images) в соответствии с файловой системой
+    $dir = 'images/';   // ← при необходимости измените на 'image/'
 
-// Если нет ошибок при сканировании
-if ($files === false) {
-   return;
-}
+    if (is_dir($dir)) {
+        // Ищем все JPG и JPEG файлы (регистронезависимо благодаря маске)
+        $files = glob($dir . '*.{jpg,jpeg,JPG,JPEG}', GLOB_BRACE);
 
-for ($i = 0; $i < count($files); $i++) {
-   // Пропускаем текущий каталог и родительский
-   if (($files[$i] != ".") && ($files[$i] != "..")) {
-       // Получаем путь к изображению
-       $path = $dir . $files[$i]; ?>
-       <!-- Выведите картинку на экран ->
-   <?php
-   }
-}
+        if (empty($files)) {
+            echo "<p>JPG-файлы не найдены в папке '$dir'.</p>";
+        } else {
+            echo "<p>Найдено файлов: " . count($files) . "</p>";
+            echo '<div class="gallery">';
 
-?>
+            foreach ($files as $file) {
+                // htmlspecialchars защищает от XSS, basename возвращает только имя файла
+                echo '<div style="border: 1px solid #ccc; padding: 5px; text-align: center;">';
+                echo '<img src="' . htmlspecialchars($file) . '" alt="' . htmlspecialchars(basename($file)) . '"><br>';
+                echo '<small>' . htmlspecialchars($file) . '</small>';
+                echo '</div>';
+            }
+
+            echo '</div>';
+        }
+    } else {
+        echo "<p>Ошибка: папка '$dir' не найдена.</p>";
+        // Отладочная информация (можно удалить после настройки)
+        echo "Текущая директория: " . __DIR__ . "<br>";
+        echo "realpath('image/'): " . realpath('image/') . "<br>";
+        echo "realpath('images/'): " . realpath('images/') . "<br>";
+    }
+    ?>
 
 </body>
 </html>
