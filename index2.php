@@ -213,31 +213,29 @@ $found = findTransactionById(2, $transactions);
     <!-- ========== ЗАДАНИЕ 2: ГАЛЕРЕЯ ИЗОБРАЖЕНИЙ ========== -->
     <h2>Галерея изображений</h2>
 
-    <?php
-    $dir = 'images/';
-    $files = scandir($dir);
-
-    if ($files === false) {
-        echo "<p>Ошибка: не удалось открыть папку с изображениями.</p>";
+   <?php
+$dir = 'image/';
+echo "<h3>Проверка галереи</h3>";
+if (is_dir($dir)) {
+    $files = glob($dir . '*.{jpg,jpeg,JPG,JPEG}', GLOB_BRACE);
+    if (empty($files)) {
+        echo "<p>Файлы не найдены. Проверьте папку image.</p>";
     } else {
-        echo '<div class="gallery">';
+        echo "<p>Найдено файлов: " . count($files) . "</p>";
+        echo '<div style="display:flex; flex-wrap:wrap; gap:10px;">';
         foreach ($files as $file) {
-            // Пропускаем служебные элементы
-            if ($file === '.' || $file === '..') {
-                continue;
-            }
-
-            $path = $dir . $file;
-            $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-
-            // Проверяем, что это JPG-файл (можно расширить список при необходимости)
-            if ($ext === 'jpg' || $ext === 'jpeg') {
-                echo '<img src="' . htmlspecialchars($path) . '" alt="' . htmlspecialchars($file) . '">';
-            }
+            // Выводим и путь, и картинку для контроля
+            echo '<div style="border:1px solid #ccc; padding:5px;">';
+            echo '<img src="' . htmlspecialchars($file) . '" alt="' . basename($file) . '" style="width:100px; height:auto;"><br>';
+            echo '<small>' . htmlspecialchars($file) . '</small>';
+            echo '</div>';
         }
         echo '</div>';
     }
-    ?>
+} else {
+    echo "<p>Папка image не найдена по пути: " . realpath('image/') . "</p>";
+}
+?>
 
 </body>
 </html>
