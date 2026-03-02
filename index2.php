@@ -213,19 +213,17 @@ $found = findTransactionById(2, $transactions);
     <!-- ========== ЗАДАНИЕ 2: ГАЛЕРЕЯ ИЗОБРАЖЕНИЙ ========== -->
     <h2>Галерея изображений</h2>
 
-   <?php
-$dir = 'images/';
-echo "<h3>Проверка галереи</h3>";
+  <?php
+$dir = 'images/'; // или 'images/' – проверьте!
 if (is_dir($dir)) {
     $files = glob($dir . '*.{jpg,jpeg,JPG,JPEG}', GLOB_BRACE);
     if (empty($files)) {
-        echo "<p>Файлы не найдены. Проверьте папку image.</p>";
+        echo "<p>Файлы не найдены.</p>";
     } else {
         echo "<p>Найдено файлов: " . count($files) . "</p>";
         echo '<div style="display:flex; flex-wrap:wrap; gap:10px;">';
         foreach ($files as $file) {
-            // Выводим и путь, и картинку для контроля
-            echo '<div style="border:1px solid #ccc; padding:5px;">';
+            echo '<div style="border:1px solid #ccc; padding:5px; text-align:center;">';
             echo '<img src="' . htmlspecialchars($file) . '" alt="' . basename($file) . '" style="width:100px; height:auto;"><br>';
             echo '<small>' . htmlspecialchars($file) . '</small>';
             echo '</div>';
@@ -233,7 +231,7 @@ if (is_dir($dir)) {
         echo '</div>';
     }
 } else {
-    echo "<p>Папка image не найдена по пути: " . realpath('image/') . "</p>";
+    echo "<p>Папка $dir не найдена по пути: " . realpath($dir) . "</p>";
 }
 ?>
 
