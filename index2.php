@@ -210,28 +210,34 @@ $found = findTransactionById(2, $transactions);
         </tfoot>
     </table>
 
-    <!-- ========== ЗАДАНИЕ 2: ГАЛЕРЕЯ ИЗОБРАЖЕНИЙ ========== -->
-    <h2>Галерея изображений</h2>
+   <!-- ========== ГАЛЕРЕЯ ========== -->
+<h2>Галерея изображений</h2>
+<?php
+$dir = 'images/'; 
 
-  <?php
-$dir = 'images/'; // или 'images/' – проверьте!
+echo "Используемая папка: " . $dir . "<br>";
+echo "Папка существует: " . (is_dir($dir) ? 'Да' : 'Нет') . "<br>";
+
 if (is_dir($dir)) {
     $files = glob($dir . '*.{jpg,jpeg,JPG,JPEG}', GLOB_BRACE);
     if (empty($files)) {
-        echo "<p>Файлы не найдены.</p>";
+        echo "<p>JPG-файлы не найдены.</p>";
     } else {
         echo "<p>Найдено файлов: " . count($files) . "</p>";
-        echo '<div style="display:flex; flex-wrap:wrap; gap:10px;">';
+        echo '<div style="display: flex; flex-wrap: wrap; gap: 10px;">';
         foreach ($files as $file) {
-            echo '<div style="border:1px solid #ccc; padding:5px; text-align:center;">';
-            echo '<img src="' . htmlspecialchars($file) . '" alt="' . basename($file) . '" style="width:100px; height:auto;"><br>';
+            echo '<div style="border: 1px solid #ccc; padding: 5px; text-align: center;">';
+            echo '<img src="' . htmlspecialchars($file) . '" alt="' . basename($file) . '" style="width: 100px; height: auto;"><br>';
             echo '<small>' . htmlspecialchars($file) . '</small>';
             echo '</div>';
         }
         echo '</div>';
     }
 } else {
-    echo "<p>Папка $dir не найдена по пути: " . realpath($dir) . "</p>";
+    echo "<p>Ошибка: папка '$dir' не найдена.</p>";
+    echo "Текущая директория: " . __DIR__ . "<br>";
+    echo "Попытка найти image: " . realpath('image/') . "<br>";
+    echo "Попытка найти images: " . realpath('images/') . "<br>";
 }
 ?>
 
