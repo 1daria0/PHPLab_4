@@ -2,44 +2,50 @@
 declare(strict_types=1);
 
 /**
- * ==========================================
- * Лабораторная работа №4
- * Массивы и функции + Файловая система
- * ==========================================
+ * ==============================================
+ *                ЗАДАНИЕ 1
+ * ==============================================
  */
 
-/**
- * Массив транзакций
- */
+// Исходный массив транзакций
 $transactions = [
     [
         "id" => 1,
-        "date" => "2024-01-10",
-        "amount" => 150.50,
+        "date" => "2019-01-01",
+        "amount" => 100.00,
         "description" => "Payment for groceries",
         "merchant" => "SuperMart",
     ],
     [
         "id" => 2,
-        "date" => "2024-02-15",
-        "amount" => 80.00,
-        "description" => "Internet bill",
-        "merchant" => "Moldtelecom",
+        "date" => "2020-02-15",
+        "amount" => 75.50,
+        "description" => "Dinner with friends",
+        "merchant" => "Local Restaurant",
     ],
     [
         "id" => 3,
-        "date" => "2024-03-01",
-        "amount" => 200.75,
-        "description" => "New headphones",
-        "merchant" => "TechStore",
+        "date" => "2023-10-26",
+        "amount" => 2500.00,
+        "description" => "Monthly rent payment",
+        "merchant" => "City Housing",
+    ],
+    [
+        "id" => 4,
+        "date" => "2023-11-15",
+        "amount" => 45.99,
+        "description" => "Internet subscription",
+        "merchant" => "ISP Company",
     ],
 ];
 
 /**
- * Вычисляет общую сумму транзакций
+ * Вычисляет общую сумму всех транзакций.
+ *
+ * @param array $transactions Массив транзакций.
+ * @return float Общая сумма.
  */
-function calculateTotalAmount(array $transactions): float
-{
+function calculateTotalAmount(array $transactions): float {
     $total = 0.0;
     foreach ($transactions as $transaction) {
         $total += $transaction['amount'];
@@ -48,25 +54,30 @@ function calculateTotalAmount(array $transactions): float
 }
 
 /**
- * Поиск по части описания
+ * Ищет транзакции по части описания (регистронезависимо).
+ *
+ * @param string $descriptionPart Часть описания для поиска.
+ * @param array $transactions Массив транзакций.
+ * @return array Массив найденных транзакций.
  */
-function findTransactionByDescription(string $descriptionPart): array
-{
-    global $transactions;
-
-    return array_filter(
-        $transactions,
-        fn($t) => stripos($t['description'], $descriptionPart) !== false
-    );
+function findTransactionByDescription(string $descriptionPart, array $transactions): array {
+    $found = [];
+    foreach ($transactions as $transaction) {
+        if (stripos($transaction['description'], $descriptionPart) !== false) {
+            $found[] = $transaction;
+        }
+    }
+    return $found;
 }
 
 /**
- * Поиск по ID через foreach
+ * Находит транзакцию по ID с использованием цикла foreach.
+ *
+ * @param int $id Идентификатор транзакции.
+ * @param array $transactions Массив транзакций.
+ * @return array|null Найденная транзакция или null.
  */
-function findTransactionById(int $id): ?array
-{
-    global $transactions;
-
+function findTransactionById(int $id, array $transactions): ?array {
     foreach ($transactions as $transaction) {
         if ($transaction['id'] === $id) {
             return $transaction;
@@ -76,43 +87,43 @@ function findTransactionById(int $id): ?array
 }
 
 /**
- * Поиск по ID через array_filter (на высшую оценку)
+ * Находит транзакцию по ID с использованием array_filter.
+ *
+ * @param int $id Идентификатор транзакции.
+ * @param array $transactions Массив транзакций.
+ * @return array|null Найденная транзакция или null.
  */
-function findTransactionByIdFilter(int $id): ?array
-{
-    global $transactions;
-
-    $result = array_filter(
-        $transactions,
-        fn($t) => $t['id'] === $id
-    );
-
-    return $result ? array_values($result)[0] : null;
+function findTransactionByIdWithFilter(int $id, array $transactions): ?array {
+    $filtered = array_filter($transactions, fn($t) => $t['id'] === $id);
+    $filtered = array_values($filtered); // переиндексируем
+    return $filtered[0] ?? null;
 }
 
 /**
- * Количество дней с момента транзакции
+ * Вычисляет количество дней между датой транзакции и сегодняшним днём.
+ *
+ * @param string $date Дата транзакции в формате YYYY-MM-DD.
+ * @return int Количество дней.
  */
-function daysSinceTransaction(string $date): int
-{
+function daysSinceTransaction(string $date): int {
     $transactionDate = new DateTime($date);
-    $currentDate = new DateTime();
-    return $transactionDate->diff($currentDate)->days;
+    $today = new DateTime();
+    $interval = $transactionDate->diff($today);
+    return (int)$interval->days;
 }
 
 /**
- * Добавление новой транзакции
+ * Добавляет новую транзакцию в глобальный массив.
+ *
+ * @param int $id
+ * @param string $date
+ * @param float $amount
+ * @param string $description
+ * @param string $merchant
+ * @return void
  */
-function addTransaction(
-    int $id,
-    string $date,
-    float $amount,
-    string $description,
-    string $merchant
-): void
-{
+function addTransaction(int $id, string $date, float $amount, string $description, string $merchant): void {
     global $transactions;
-
     $transactions[] = [
         "id" => $id,
         "date" => $date,
@@ -122,95 +133,111 @@ function addTransaction(
     ];
 }
 
-/* Добавляем новую транзакцию */
-addTransaction(4, "2024-03-20", 99.99, "Cinema tickets", "CinemaCity");
+// ---- Демонстрация работы функций ----
 
-/* Сортировка по дате */
-usort($transactions, function ($a, $b) {
-    return strtotime($a['date']) <=> strtotime($b['date']);
-});
+// Добавляем новую транзакцию
+addTransaction(5, '2024-03-01', 123.45, 'New purchase from function', 'Online Store');
 
-/* Сортировка по сумме (по убыванию) */
-usort($transactions, function ($a, $b) {
-    return $b['amount'] <=> $a['amount'];
-});
+// Сортируем транзакции по сумме (по убыванию)
+usort($transactions, fn($a, $b) => $b['amount'] <=> $a['amount']);
+
+// (Для проверки можно также отсортировать по дате, закомментировав предыдущую строку)
+// usort($transactions, fn($a, $b) => (new DateTime($a['date'])) <=> (new DateTime($b['date'])));
+
+// Поиск транзакции с ID = 2 (просто для демонстрации)
+$found = findTransactionById(2, $transactions);
 
 ?>
-
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-<meta charset="UTF-8">
-<title>Lab 4</title>
-
-<style>
-body { font-family: Arial; margin: 20px; background:#f2f2f2; }
-table { border-collapse: collapse; width: 100%; background:white; }
-th, td { border:1px solid #ccc; padding:8px; text-align:center; }
-th { background:#eee; }
-.gallery { display:grid; grid-template-columns:repeat(3,1fr); gap:15px; margin-top:30px; }
-.gallery img { width:100%; height:200px; object-fit:cover; border-radius:8px; }
-footer { text-align:center; margin-top:40px; }
-</style>
-
+    <meta charset="UTF-8">
+    <title>Лабораторная работа: транзакции и галерея</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+        h1, h2 { color: #333; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; background-color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        th { background-color: #4CAF50; color: white; padding: 12px; text-align: left; }
+        td { padding: 10px; border-bottom: 1px solid #ddd; }
+        tr:hover { background-color: #f5f5f5; }
+        .total-row { background-color: #e8f5e9; font-weight: bold; }
+        .gallery { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+        .gallery img { width: 150px; height: auto; border: 1px solid #ccc; border-radius: 4px; transition: transform 0.2s; }
+        .gallery img:hover { transform: scale(1.05); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .search-result { background-color: #e3f2fd; padding: 10px; border-radius: 4px; margin: 10px 0; }
+    </style>
 </head>
 <body>
+    <h1>Лабораторная работа: массивы и галерея</h1>
 
-<h2>Bank Transactions</h2>
+    <!-- ========== ЗАДАНИЕ 1: ТРАНЗАКЦИИ ========== -->
+    <h2>Список банковских транзакций</h2>
 
-<table>
-<thead>
-<tr>
-    <th>ID</th>
-    <th>Date</th>
-    <th>Amount</th>
-    <th>Description</th>
-    <th>Merchant</th>
-    <th>Days Passed</th>
-</tr>
-</thead>
+    <?php if ($found): ?>
+        <div class="search-result">
+            <strong>Демонстрация поиска:</strong> найдена транзакция с ID 2: "<?= htmlspecialchars($found['description']) ?>"
+        </div>
+    <?php endif; ?>
 
-<tbody>
-<?php foreach ($transactions as $transaction): ?>
-<tr>
-    <td><?= $transaction['id'] ?></td>
-    <td><?= $transaction['date'] ?></td>
-    <td><?= $transaction['amount'] ?></td>
-    <td><?= $transaction['description'] ?></td>
-    <td><?= $transaction['merchant'] ?></td>
-    <td><?= daysSinceTransaction($transaction['date']) ?></td>
-</tr>
-<?php endforeach; ?>
-</tbody>
-</table>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Дата</th>
+                <th>Сумма</th>
+                <th>Описание</th>
+                <th>Получатель</th>
+                <th>Дней с момента</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($transactions as $transaction): ?>
+                <tr>
+                    <td><?= htmlspecialchars((string)$transaction['id']) ?></td>
+                    <td><?= htmlspecialchars($transaction['date']) ?></td>
+                    <td>$<?= number_format($transaction['amount'], 2) ?></td>
+                    <td><?= htmlspecialchars($transaction['description']) ?></td>
+                    <td><?= htmlspecialchars($transaction['merchant']) ?></td>
+                    <td><?= daysSinceTransaction($transaction['date']) ?> дн.</td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+        <tfoot>
+            <tr class="total-row">
+                <td colspan="2"><strong>Итого:</strong></td>
+                <td colspan="4"><strong>$<?= number_format(calculateTotalAmount($transactions), 2) ?></strong></td>
+            </tr>
+        </tfoot>
+    </table>
 
-<p><strong>Total Amount: <?= calculateTotalAmount($transactions); ?></strong></p>
+    <!-- ========== ЗАДАНИЕ 2: ГАЛЕРЕЯ ИЗОБРАЖЕНИЙ ========== -->
+    <h2>Галерея изображений</h2>
 
-<hr>
+    <?php
+    $dir = 'images/';
+    $files = scandir($dir);
 
-<h2>Image Gallery</h2>
+    if ($files === false) {
+        echo "<p>Ошибка: не удалось открыть папку с изображениями.</p>";
+    } else {
+        echo '<div class="gallery">';
+        foreach ($files as $file) {
+            // Пропускаем служебные элементы
+            if ($file === '.' || $file === '..') {
+                continue;
+            }
 
-<div class="gallery">
-<?php
-$dir = 'images/cat1';
-$dir = 'images/cat2';
-$dir = 'images/cat3';
-$dir = 'images/cat4';
-$files = scandir($dir);
+            $path = $dir . $file;
+            $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
-if ($files !== false) {
-    foreach ($files as $file) {
-        if ($file !== "." && $file !== "..") {
-            echo "<img src='$dir$file' alt='Image'>";
+            // Проверяем, что это JPG-файл (можно расширить список при необходимости)
+            if ($ext === 'jpg' || $ext === 'jpeg') {
+                echo '<img src="' . htmlspecialchars($path) . '" alt="' . htmlspecialchars($file) . '">';
+            }
         }
+        echo '</div>';
     }
-}
-?>
-</div>
-
-<footer>
-USM © 2024
-</footer>
+    ?>
 
 </body>
 </html>
