@@ -213,7 +213,7 @@ $found = findTransactionById(2, $transactions);
    <!-- ========== ГАЛЕРЕЯ ========== -->
 <h2>Галерея изображений</h2>
 <?php
-$dir = '/images/'; 
+$dir = 'images/'; 
 
 echo "Используемая папка: " . $dir . "<br>";
 echo "Папка существует: " . (is_dir($dir) ? 'Да' : 'Нет') . "<br>";
