@@ -159,38 +159,43 @@ $found = findTransactionById(2, $transactions);
 
   
 <h2>Галерея изображений</h2>
- <?php
-  
-    $dir = 'images/';   
+<?php
 
-    if (is_dir($dir)) {
-      
-        $files = glob($dir . '*.{jpg,jpeg,JPG,JPEG}', GLOB_BRACE);
+$dir = 'images/';
 
-        if (empty($files)) {
-            echo "<p>JPG-файлы не найдены в папке '$dir'.</p>";
-        } else {
-            echo "<p>Найдено файлов: " . count($files) . "</p>";
-            echo '<div class="gallery">';
+if (is_dir($dir)) {
 
-            foreach ($files as $file) {
-                
-                echo '<div style="border: 1px solid #ccc; padding: 5px; text-align: center;">';
-                echo '<img src="' . htmlspecialchars($file) . '" alt="' . htmlspecialchars(basename($file)) . '"><br>';
-                echo '<small>' . htmlspecialchars($file) . '</small>';
-                echo '</div>';
-            }
+    $files = glob($dir . '*.{jpg,jpeg,JPG,JPEG}', GLOB_BRACE);
 
+    if (empty($files)) {
+        echo "<p>JPG-файлы не найдены в папке '$dir'.</p>";
+    } else {
+
+        echo "<p>Найдено файлов: " . count($files) . "</p>";
+
+        echo '<div class="gallery">';
+
+        foreach ($files as $file) {
+
+            echo '<div class="gallery-item">';
+            echo '<img src="' . htmlspecialchars($file) . '" alt="' . htmlspecialchars(basename($file)) . '">';
+            echo '<br>';
+            echo '<small>' . htmlspecialchars(basename($file)) . '</small>';
             echo '</div>';
         }
-    } else {
-        echo "<p>Ошибка: папка '$dir' не найдена.</p>";
 
-        echo "Текущая директория: " . __DIR__ . "<br>";
-        echo "realpath('image/'): " . realpath('image/') . "<br>";
-        echo "realpath('images/'): " . realpath('images/') . "<br>";
+        echo '</div>';
     }
-    ?>
+
+} else {
+
+    echo "<p>Ошибка: папка '$dir' не найдена.</p>";
+
+    echo "Текущая директория: " . __DIR__ . "<br>";
+    echo "realpath('image/'): " . realpath('image/') . "<br>";
+    echo "realpath('images/'): " . realpath('images/') . "<br>";
+}
+?>
 
 </body>
 </html>
